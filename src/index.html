@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Bucket List</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="sweet">
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="title" id="title">🍰 Sweet Bucket List</h1>
+            <button class="toggle-btn" id="toggleBtn"><img src="../resources/wings.png" alt="sweet toggle" class="toggle-icon"></button>
+        </div>
+
+        <!-- Stats Card -->
+        <div class="stats-card">
+            <div class="stats-header">
+                <div class="completed-count">
+                    <strong>Completed:</strong> <span id="completedCount">0</span>
+                </div>
+                <button class="badges-btn" id="badgesBtn">
+                    🏆 Badges
+                </button>
+            </div>
+            <div class="badges-section" id="badgesSection">
+                <div class="badges-grid">
+                    <div>
+                        <div class="badge-category sweet-label">🍰 Sweet Badges</div>
+                        <div class="badge-list" id="sweetBadges">
+                            <div class="badge locked sweet-badge">5</div>
+                            <div class="badge locked sweet-badge">10</div>
+                            <div class="badge locked sweet-badge">15</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="badge-category spicy-label">🌶️ Spicy Badges</div>
+                        <div class="badge-list" id="spicyBadges">
+                            <div class="badge locked spicy-badge">5</div>
+                            <div class="badge locked spicy-badge">10</div>
+                            <div class="badge locked spicy-badge">15</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Section -->
+        <div class="input-section">
+            <input 
+                type="text" 
+                class="task-input" 
+                id="taskInput" 
+                placeholder="Add a sweet treat to try..."
+            >
+            <button class="add-btn" id="addBtn">Add</button>
+        </div>
+
+        <!-- Task List -->
+        <div class="task-list" id="taskList">
+            <div class="empty-state">
+                <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">No sweet items yet!</p>
+                <p style="font-size: 0.9rem; opacity: 0.7;">Add your first dish above</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isSpicy = false;
+        let tasks = [];
+
+        // Load data from storage
+        async function loadData() {
+            try {
+                const result = await window.storage.get('food-tasks');
+                if (result) {
+                    tasks = JSON.parse(result.value);
+                    renderTasks();
+                    updateStats();
+                }
+            } catch (error) {
+                console.log('No existing tasks, starting fresh');
+            }
+        }
+
+        // Save data to storage
+        async function saveData() {
+            try {
+                await window.storage.set('food-tasks', JSON.stringify(tasks));
+            } catch (error) {
+                console.error('Error saving:', error);
+            }
+        }
+
+        // Toggle theme
+        document.getElementById('toggleBtn').addEventListener('click', () => {
+            isSpicy = !isSpicy;
+            document.body.className = isSpicy ? 'spicy' : 'sweet';
+            document.getElementById('title').textContent = isSpicy ? 'Spicy Bucket List' : 'Sweet Bucket List';
+            document.getElementById('toggleBtn').innerHTML = isSpicy ? '<img src="../resources/devil.png" alt="spicy toggle" class="toggle-icon">' : '<img src="../resources/wings.png" alt="sweet toggle" class="toggle-icon">';
+            document.getElementById('taskInput').placeholder = isSpicy ? 'Add a spicy dish to try...' : 'Add a sweet treat to try...';
+            renderTasks();
+            updateStats();
+        });
+
+        // Toggle badges section
+        document.getElementById('badgesBtn').addEventListener('click', () => {
+            document.getElementById('badgesSection').classList.toggle('show');
+        });
+
+        // Add task
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            const text = input.value.trim();
+            
+            if (text) {
+                const task = {
+                    id: Date.now(),
+                    text: text,
+                    completed: false,
+                    isSpicy: isSpicy
+                };
+                tasks.push(task);
+                input.value = '';
+                saveData();
+                renderTasks();
+                updateStats();
+            }
+        }
+
+        document.getElementById('addBtn').addEventListener('click', addTask);
+        document.getElementById('taskInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addTask();
+        });
+
+        // Toggle task completion
+        function toggleTask(id) {
+            tasks = tasks.map(t => 
+                t.id === id ? { ...t, completed: !t.completed } : t
+            );
+            saveData();
+            renderTasks();
+            updateStats();
+        }
+
+        // Delete task
+        function deleteTask(id) {
+            tasks = tasks.filter(t => t.id !== id);
+            saveData();
+            renderTasks();
+            updateStats();
+        }
+
+        // Render tasks
+        function renderTasks() {
+            const taskList = document.getElementById('taskList');
+            const filteredTasks = tasks.filter(t => t.isSpicy === isSpicy);
+            
+            if (filteredTasks.length === 0) {
+                taskList.innerHTML = `
+                    <div class="empty-state">
+                        <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">No ${isSpicy ? 'spicy' : 'sweet'} items yet!</p>
+                        <p style="font-size: 0.9rem; opacity: 0.7;">Add your first dish above</p>
+                    </div>
+                `;
+            } else {
+                taskList.innerHTML = filteredTasks.map(task => `
+                    <div class="task-item ${task.completed ? 'completed' : ''}">
+                        <input 
+                            type="checkbox" 
+                            class="task-checkbox" 
+                            ${task.completed ? 'checked' : ''}
+                            onchange="toggleTask(${task.id})"
+                        >
+                        <span class="task-text">${task.text}</span>
+                        ${task.completed ? `<span class="task-icon">${isSpicy ? '🔥' : '✨'}</span>` : ''}
+                        <button class="delete-btn" onclick="deleteTask(${task.id})">Delete</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Update stats and badges
+        function updateStats() {
+            const sweetCompleted = tasks.filter(t => !t.isSpicy && t.completed).length;
+            const spicyCompleted = tasks.filter(t => t.isSpicy && t.completed).length;
+            
+            document.getElementById('completedCount').textContent = isSpicy ? spicyCompleted : sweetCompleted;
+            
+            // Update badges
+            updateBadges('sweetBadges', sweetCompleted, 'sweet-badge');
+            updateBadges('spicyBadges', spicyCompleted, 'spicy-badge');
+        }
+
+        function updateBadges(elementId, count, badgeClass) {
+            const badges = document.getElementById(elementId).children;
+            const levels = [5, 10, 15];
+            
+            for (let i = 0; i < badges.length; i++) {
+                if (count >= levels[i]) {
+                    badges[i].classList.add('unlocked');
+                    badges[i].classList.remove('locked');
+                } else {
+                    badges[i].classList.remove('unlocked');
+                    badges[i].classList.add('locked');
+                }
+            }
+        }
+
+        // Load data on page load
+        loadData();
+    </script>
+</body>
+</html>
