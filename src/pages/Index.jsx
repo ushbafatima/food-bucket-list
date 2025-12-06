@@ -17,6 +17,7 @@ const Index = () => {
   const [collectedBadges, setCollectedBadges] = useState(new Set());
   const [pendingBadge, setPendingBadge] = useState(null);
   const prevIsSpicyRef = useRef(isSpicy);
+  const [showSpicyOverlay, setShowSpicyOverlay] = useState(false);
 
   const handleSweetToggle = (id) => {
     setCheckedSweet((prev) => {
@@ -112,7 +113,14 @@ const Index = () => {
         });
       }, 250);
     }
-    
+
+    // Show spicy overlay (fire + elmo) when switching ON to spicy
+    if (prevIsSpicyRef.current === false && isSpicy === true) {
+      setShowSpicyOverlay(true);
+      // hide overlay after 5s (matches previous behavior)
+      setTimeout(() => setShowSpicyOverlay(false), 5000);
+    }
+
     prevIsSpicyRef.current = isSpicy;
   }, [isSpicy]);
 
@@ -185,6 +193,71 @@ const Index = () => {
           <ToggleSwitch isSpicy={isSpicy} onToggle={() => setIsSpicy(!isSpicy)} />
         </div>
       </header>
+
+      {/* Fire + Elmo overlay when switching to spicy mode */}
+      {showSpicyOverlay && (
+        <div
+          className={cn("fixed", "bottom-0", "left-0", "right-0", "z-10", "pointer-events-none")}
+          style={{
+            width: "100%",
+            height: "300px",
+            // slide the fire up and then fade the whole overlay out after 5s
+            animation: "fireSlideUp 3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, fireOverlayFadeOut 0.6s ease-in-out 5s forwards",
+            willChange: "transform, opacity"
+          }}
+        >
+          {/* Fire GIF */}
+          <div
+            style={{
+              position: "relative",
+              width: "100%",
+              height: "100%",
+              backgroundImage: "url('/resources/bg/spicy/fire.gif')",
+              backgroundSize: "cover",
+              backgroundPosition: "bottom center",
+              animation: "fireFlicker 0.6s ease-in-out infinite"
+            }}
+          >
+            {/* Elmo inside overlay (align to overlay bottom) */}
+            <img
+              src="/resources/bg/spicy/elmo.png"
+              alt="Elmo"
+              style={{
+                position: "absolute",
+                bottom: "0",
+                left: "50%",
+                transform: "translateX(-50%)",
+                height: "220px",
+                width: "auto",
+                zIndex: 9999,
+                animation: "elmoSlideUpBottom 3s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+                willChange: "bottom",
+                pointerEvents: "none"
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Elmo-only animation when a spicy badge is unlocked (do not show while overlay active) */}
+      {pendingBadge && pendingBadge.type === "spicy" && !showSpicyOverlay && (
+        <img
+          src="/resources/bg/spicy/elmo.png"
+          alt="Elmo"
+          style={{
+            position: "fixed",
+            bottom: "0",
+            left: "50%",
+            transform: "translateX(-50%)",
+            height: "220px",
+            width: "auto",
+            zIndex: 9999,
+            animation: "elmoSlideUpBottom 3s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+            willChange: "bottom",
+            pointerEvents: "none"
+          }}
+        />
+      )}
 
       <main className={cn("container", "mx-auto", "py-8", "px-4")} style={{ maxWidth: "1300px", width: "100%", paddingTop: "100px" }}>
         <div className={cn("mb-8", "flex", "items-stretch", "gap-4")} style={{ width: "100%" }}>

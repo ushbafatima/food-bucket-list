@@ -2430,3 +2430,40 @@ h1, h2, h3, h4, h5, h6,
   background-color: var(--muted);
   color: var(--muted-foreground);
 }
+
+/* Fire and Elmo animations */
+@keyframes fireSlideUp {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fireOverlayFadeOut {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+  99% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* Precise bottom-based slide for fixed-position Elmo */
+@keyframes elmoSlideUpBottom {
+  from {
+    /* start below the viewport by image height + extra so it's fully hidden */
+    bottom: -400px; /* image is ~280px tall; start further down to be safe */
+    opacity: 0;
+  }
+  to {
+    bottom: 0px;
+    opacity: 1;
+  }
+}
