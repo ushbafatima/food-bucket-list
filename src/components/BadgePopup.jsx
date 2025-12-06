@@ -19,7 +19,14 @@ export const BadgePopup = ({ badge, type, onCollect }) => {
           borderColor: type === "sweet" ? "#f472b6" : "#f97316"
         }}
       >
-        <div className={cn("text-6xl", "mb-4", "sparkle")}>{badge.emoji}</div>
+        <div className={cn("mb-4", "sparkle", "flex", "justify-center")}>
+          <img 
+            src={badge.image} 
+            alt={badge.name}
+            className={cn("w-20", "h-20", "max-w-20", "max-h-20", "object-contain", "flex-shrink-0")}
+            style={{ maxWidth: "80px", maxHeight: "80px", width: "80px", height: "80px" }}
+          />
+        </div>
         <h2
           className={cn("text-2xl", "font-bold", "mb-2")}
           style={{

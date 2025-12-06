@@ -50,7 +50,7 @@ export const BucketSection = ({
       <AddItemForm onAdd={onAddItem} type={type} />
 
       {items.length > 0 ? (
-        <div className={cn("grid", "gap-2")} style={{ gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))" }}>
+        <div className={cn("grid", "grid-cols-1", "md:grid-cols-2", "gap-2")}>
           {items.map((item) => (
             <BucketListItem
               key={item.id}

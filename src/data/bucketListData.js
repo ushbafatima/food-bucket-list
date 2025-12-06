@@ -1,13 +1,13 @@
 export const sweetBadges = [
-  { id: "sb1", name: "Sugar Baby", emoji: "🍬", threshold: 5, description: "Just entering your sweet era." },
-  { id: "sb2", name: "Cupcake Cutie", emoji: "🧁", threshold: 10, description: "You're officially a treat enjoyer." },
-  { id: "sb3", name: "Princess Bubblegum", emoji: "👑", threshold: 50, description: "Final boss of sugary things." },
+  { id: "sb1", name: "Sugar Baby", emoji: "🍬", image: "/resources/badges/sweet/sugar_baby.png", threshold: 5, description: "Just entering your sweet era." },
+  { id: "sb2", name: "Cupcake Cutie", emoji: "🧁", image: "/resources/badges/sweet/cupcake_cutie.png", threshold: 10, description: "You're officially a treat enjoyer." },
+  { id: "sb3", name: "Princess Bubblegum", emoji: "👑", image: "/resources/badges/sweet/princess_bubblegum.png", threshold: 50, description: "Final boss of sugary things." },
 ];
 
 export const spicyBadges = [
-  { id: "spb1", name: "Mild Menace", emoji: "🌡️", threshold: 5, description: "Barely spicy, but chaotic." },
-  { id: "spb2", name: "Chili Champ", emoji: "🏆", threshold: 10, description: "Heat level: manageable but impressive." },
-  { id: "spb3", name: "Hot Girl Hot Sauce", emoji: "💅", threshold: 20, description: "Slaying the spice scene." },
+  { id: "spb1", name: "Mild Menace", emoji: "🌡️", image: "/resources/badges/spicy/mild-menace.png", threshold: 5, description: "Barely spicy, but chaotic." },
+  { id: "spb2", name: "Chili Champ", emoji: "🏆", image: "/resources/badges/spicy/chilli_champ.png", threshold: 10, description: "Heat level: manageable but impressive." },
+  { id: "spb3", name: "Hot Girl Hot Sauce", emoji: "💅", image: "/resources/badges/spicy/hot_girl_hot_sauce.png", threshold: 20, description: "Slaying the spice scene." },
 ];
 
 export const getMoodLevel = (count, type) => {

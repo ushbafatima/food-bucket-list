@@ -107,7 +107,12 @@ export const BadgeDisplay = ({ collectedBadges, isSpicy }) => {
                       opacity: isUnlocked ? 1 : 0.5
                     }}
                   >
-                    <span className={cn("text-4xl")}>{badge.emoji}</span>
+                    <img 
+                      src={badge.image} 
+                      alt={badge.name}
+                      className={cn("w-12", "h-12", "max-w-12", "max-h-12", "object-contain", "flex-shrink-0")}
+                      style={{ maxWidth: "48px", maxHeight: "48px", width: "48px", height: "48px" }}
+                    />
                     <div className={cn("flex-1")}>
                       <h4 
                         className={cn("font-bold")}
@@ -156,7 +161,7 @@ export const BadgeDisplay = ({ collectedBadges, isSpicy }) => {
           {unlockedBadges.map((badge) => (
             <div
               key={badge.id}
-              className={cn("flex", "items-center", "gap-2", "px-3", "py-2", "rounded-xl", "transition-all", "animate-scale-in")}
+              className={cn("flex", "items-center", "justify-center", "p-2", "rounded-xl", "transition-all", "animate-scale-in")}
               style={{
                 background: isSpicy 
                   ? "rgba(249, 115, 22, 0.2)"
@@ -167,15 +172,12 @@ export const BadgeDisplay = ({ collectedBadges, isSpicy }) => {
                 }`
               }}
             >
-              <span className={cn("text-2xl")}>{badge.emoji}</span>
-              <span 
-                className={cn("text-sm", "font-medium")}
-                style={{
-                  color: isSpicy ? "#fbbf24" : "#831843"
-                }}
-              >
-                {badge.name}
-              </span>
+              <img 
+                src={badge.image} 
+                alt={badge.name}
+                className={cn("w-10", "h-10", "max-w-10", "max-h-10", "object-contain", "flex-shrink-0")}
+                style={{ maxWidth: "40px", maxHeight: "40px", width: "40px", height: "40px" }}
+              />
             </div>
           ))}
         </div>
