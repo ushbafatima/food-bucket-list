@@ -202,7 +202,7 @@ const Index = () => {
             width: "100%",
             height: "300px",
             // slide the fire up and then fade the whole overlay out after 5s
-            animation: "fireSlideUp 3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, fireOverlayFadeOut 0.6s ease-in-out 5s forwards",
+            animation: "fireSlideUp 2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, fireOverlayFadeOut 0.6s ease-in-out 2s forwards",
             willChange: "transform, opacity"
           }}
         >
@@ -230,7 +230,7 @@ const Index = () => {
                 height: "220px",
                 width: "auto",
                 zIndex: 9999,
-                animation: "elmoSlideUpBottom 3s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+                animation: "elmoSlideUpBottom 2s cubic-bezier(0.22, 1, 0.36, 1) forwards",
                 willChange: "bottom",
                 pointerEvents: "none"
               }}
@@ -252,7 +252,7 @@ const Index = () => {
             height: "220px",
             width: "auto",
             zIndex: 9999,
-            animation: "elmoSlideUpBottom 3s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+            animation: "elmoSlideUpBottom 2s cubic-bezier(0.22, 1, 0.36, 1) forwards",
             willChange: "bottom",
             pointerEvents: "none"
           }}
