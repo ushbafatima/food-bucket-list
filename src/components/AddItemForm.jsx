@@ -4,20 +4,43 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
 
-const SWEET_EMOJIS = ["🍰", "🍩", "🧁", "🍪", "🍫", "🍬", "🍭", "🍨", "🎂", "🥧"];
-const SPICY_EMOJIS = ["🌶️", "🔥", "🍜", "🍛", "🥘", "🍗", "🌮", "🥡", "🍲", "🫕"];
+const SWEET_LABELS = [
+  { name: "bday-cake", path: "/resources/labels/sweet/bday-cake.png" },
+  { name: "cake", path: "/resources/labels/sweet/cake.png" },
+  { name: "candy", path: "/resources/labels/sweet/candy.png" },
+  { name: "chocolate", path: "/resources/labels/sweet/chocolate.png" },
+  { name: "cookie", path: "/resources/labels/sweet/cookie.png" },
+  { name: "cupcake", path: "/resources/labels/sweet/cupcake.png" },
+  { name: "donut", path: "/resources/labels/sweet/donut.png" },
+  { name: "icecream", path: "/resources/labels/sweet/icecream.png" },
+  { name: "lollipop", path: "/resources/labels/sweet/lollipop.png" },
+  { name: "pie", path: "/resources/labels/sweet/pie.png" }
+];
+
+const SPICY_LABELS = [
+  { name: "box", path: "/resources/labels/spicy/box.png" },
+  { name: "burger", path: "/resources/labels/spicy/burger.png" },
+  { name: "fire", path: "/resources/labels/spicy/fire.png" },
+  { name: "hotdog", path: "/resources/labels/spicy/hotdog.png" },
+  { name: "noodles", path: "/resources/labels/spicy/noodles.png" },
+  { name: "pasta", path: "/resources/labels/spicy/pasta.png" },
+  { name: "ramen", path: "/resources/labels/spicy/ramen.png" },
+  { name: "soup", path: "/resources/labels/spicy/soup.png" },
+  { name: "tacos", path: "/resources/labels/spicy/tacos.png" },
+  { name: "wings", path: "/resources/labels/spicy/wings.png" }
+];
 
 export const AddItemForm = ({ onAdd, type }) => {
   const [name, setName] = useState("");
-  const [selectedEmoji, setSelectedEmoji] = useState(type === "sweet" ? "🍰" : "🌶️");
+  const [selectedLabel, setSelectedLabel] = useState(type === "sweet" ? SWEET_LABELS[0].path : SPICY_LABELS[0].path);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const emojis = type === "sweet" ? SWEET_EMOJIS : SPICY_EMOJIS;
+  const labels = type === "sweet" ? SWEET_LABELS : SPICY_LABELS;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (name.trim()) {
-      onAdd(name.trim(), selectedEmoji);
+      onAdd(name.trim(), selectedLabel);
       setName("");
       setIsExpanded(false);
     }
@@ -88,35 +111,43 @@ export const AddItemForm = ({ onAdd, type }) => {
               color: type === "sweet" ? "#db2777" : "#fb923c"
             }}
           >
-            Pick an emoji:
+            Pick a label:
           </p>
           <div className={cn("flex", "flex-wrap", "gap-2")}>
-            {emojis.map((emoji) => (
+            {labels.map((label) => (
               <button
-                key={emoji}
+                key={label.path}
                 type="button"
-                onClick={() => setSelectedEmoji(emoji)}
-                className={cn("text-2xl", "p-2", "rounded-lg", "transition-all")}
+                onClick={() => setSelectedLabel(label.path)}
+                className={cn("p-2", "rounded-lg", "transition-all", "flex", "items-center", "justify-center")}
                 style={{
-                  background: selectedEmoji === emoji
+                  background: selectedLabel === label.path
                     ? type === "sweet"
                       ? "#f9a8d4"
                       : "rgba(249, 115, 22, 0.4)"
                     : "transparent",
-                  transform: selectedEmoji === emoji ? "scale(1.1)" : "scale(1)"
+                  transform: selectedLabel === label.path ? "scale(1.1)" : "scale(1)",
+                  border: selectedLabel === label.path 
+                    ? `2px solid ${type === "sweet" ? "#ec4899" : "#f97316"}`
+                    : "2px solid transparent"
                 }}
                 onMouseEnter={(e) => {
-                  if (selectedEmoji !== emoji) {
+                  if (selectedLabel !== label.path) {
                     e.currentTarget.style.background = type === "sweet" ? "#fbcfe8" : "rgba(64, 64, 64, 0.5)";
                   }
                 }}
                 onMouseLeave={(e) => {
-                  if (selectedEmoji !== emoji) {
+                  if (selectedLabel !== label.path) {
                     e.currentTarget.style.background = "transparent";
                   }
                 }}
               >
-                {emoji}
+                <img 
+                  src={label.path} 
+                  alt={label.name}
+                  className={cn("w-8", "h-8", "object-contain")}
+                  style={{ maxWidth: "32px", maxHeight: "32px", width: "32px", height: "32px" }}
+                />
               </button>
             ))}
           </div>
@@ -126,7 +157,7 @@ export const AddItemForm = ({ onAdd, type }) => {
           <Button
             type="submit"
             disabled={!name.trim()}
-            className={cn("flex-1")}
+            className={cn("flex-1", "flex", "items-center", "gap-2")}
             style={{
               background: type === "sweet" ? "#ec4899" : "#f97316",
               color: "#ffffff"
@@ -142,7 +173,13 @@ export const AddItemForm = ({ onAdd, type }) => {
               }
             }}
           >
-            Add {selectedEmoji}
+            <img 
+              src={selectedLabel} 
+              alt="selected label"
+              className={cn("w-5", "h-5", "object-contain")}
+              style={{ maxWidth: "20px", maxHeight: "20px", width: "20px", height: "20px" }}
+            />
+            Add
           </Button>
           <Button
             type="button"

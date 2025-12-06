@@ -1,7 +1,4 @@
-import { getMoodLevel } from "@/data/bucketListData.js";
 import { BucketListItem } from "./BucketListItem.jsx";
-import { ProgressBar } from "./ProgressBar.jsx";
-import { MoodIndicator } from "./MoodIndicator.jsx";
 import { AddItemForm } from "./AddItemForm.jsx";
 import { cn } from "@/lib/utils";
 
@@ -12,40 +9,37 @@ export const BucketSection = ({
   checkedItems,
   onToggle,
   onAddItem,
+  onDeleteItem,
   type,
 }) => {
   const checkedCount = Array.from(checkedItems).filter((id) =>
     items.some((item) => item.id === id)
   ).length;
 
-  const mood = getMoodLevel(checkedCount, type);
-
   return (
     <div className={cn("space-y-6")} style={{ width: "100%" }}>
-      <div className={cn("text-center")}>
-        <h2
-          className={cn("text-3xl", "font-bold", "mb-1")}
+      <div className={cn("flex", "items-center", "justify-between")}>
+        <div className={cn("flex", "items-center", "gap-2")}>
+          <h2
+            className={cn("text-2xl", "font-bold")}
+            style={{
+              color: type === "sweet" ? "#db2777" : "#fb923c",
+              fontFamily: "'Pixelify Sans', sans-serif"
+            }}
+          >
+            {title.replace(/[✨🔥]/g, "").trim()}: {subtitle}
+          </h2>
+        </div>
+        <span
+          className={cn("text-xl", "font-semibold")}
           style={{
-            color: type === "sweet" ? "#db2777" : "#fb923c"
+            color: type === "sweet" ? "#db2777" : "#fb923c",
+            fontFamily: "'Pixelify Sans', sans-serif"
           }}
         >
-          {title}
-        </h2>
-        <p 
-          className={cn("text-sm")}
-          style={{
-            color: type === "sweet" ? "rgba(236, 72, 153, 0.7)" : "#a3a3a3"
-          }}
-        >
-          {subtitle}
-        </p>
+          {checkedCount}/{items.length}
+        </span>
       </div>
-
-      {items.length > 0 && (
-        <ProgressBar current={checkedCount} total={items.length} type={type} />
-      )}
-
-      <MoodIndicator label={mood.label} emoji={mood.emoji} type={type} />
 
       <AddItemForm onAdd={onAddItem} type={type} />
 
@@ -57,6 +51,7 @@ export const BucketSection = ({
               item={item}
               checked={checkedItems.has(item.id)}
               onToggle={onToggle}
+              onDelete={onDeleteItem}
               type={type}
             />
           ))}

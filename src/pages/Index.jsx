@@ -58,6 +58,24 @@ const Index = () => {
     setSpicyItems((prev) => [...prev, newItem]);
   };
 
+  const handleDeleteSweetItem = (id) => {
+    setSweetItems((prev) => prev.filter((item) => item.id !== id));
+    setCheckedSweet((prev) => {
+      const newSet = new Set(prev);
+      newSet.delete(id);
+      return newSet;
+    });
+  };
+
+  const handleDeleteSpicyItem = (id) => {
+    setSpicyItems((prev) => prev.filter((item) => item.id !== id));
+    setCheckedSpicy((prev) => {
+      const newSet = new Set(prev);
+      newSet.delete(id);
+      return newSet;
+    });
+  };
+
   useEffect(() => {
     const sweetCount = checkedSweet.size;
     const spicyCount = checkedSpicy.size;
@@ -110,7 +128,7 @@ const Index = () => {
           width: "100%"
         }}
       >
-        <div className={cn("container", "mx-auto", "py-4", "px-4", "flex", "items-center", "justify-between", "gap-4")} style={{ maxWidth: "100%", flexDirection: "row" }}>
+        <div className={cn("container", "mx-auto", "py-4", "px-4", "flex", "items-center", "justify-between", "gap-4")} style={{ maxWidth: "1300px", flexDirection: "row" }}>
           <h1 
             className={cn("font-bold", "transition-all", "duration-500", "text-2xl", "text-3xl")}
             style={{
@@ -128,13 +146,14 @@ const Index = () => {
         </div>
       </header>
 
-      <main className={cn("container", "mx-auto", "py-8", "px-4")} style={{ maxWidth: "100%", width: "100%", paddingTop: "100px" }}>
-        <div className={cn("mb-8")} style={{ width: "100%" }}>
-          <BadgeDisplay collectedBadges={collectedBadges} isSpicy={isSpicy} />
-        </div>
-
-        <div className={cn("mb-8")} style={{ width: "100%" }}>
-          <GlobalMoodMeter sweetCount={checkedSweet.size} spicyCount={checkedSpicy.size} isSpicy={isSpicy} />
+      <main className={cn("container", "mx-auto", "py-8", "px-4")} style={{ maxWidth: "1300px", width: "100%", paddingTop: "100px" }}>
+        <div className={cn("mb-8", "flex", "items-stretch", "gap-4")} style={{ width: "100%" }}>
+          <div className={cn("flex-1", "flex")}>
+            <BadgeDisplay collectedBadges={collectedBadges} isSpicy={isSpicy} />
+          </div>
+          <div className={cn("flex-1", "flex")}>
+            <GlobalMoodMeter sweetCount={checkedSweet.size} spicyCount={checkedSpicy.size} isSpicy={isSpicy} />
+          </div>
         </div>
 
         <div className={cn("relative", "overflow-hidden")} style={{ width: "100%" }}>
@@ -163,6 +182,7 @@ const Index = () => {
                 checkedItems={checkedSweet}
                 onToggle={handleSweetToggle}
                 onAddItem={handleAddSweetItem}
+                onDeleteItem={handleDeleteSweetItem}
                 type="sweet"
               />
             </div>
@@ -193,6 +213,7 @@ const Index = () => {
                 checkedItems={checkedSpicy}
                 onToggle={handleSpicyToggle}
                 onAddItem={handleAddSpicyItem}
+                onDeleteItem={handleDeleteSpicyItem}
                 type="spicy"
               />
             </div>

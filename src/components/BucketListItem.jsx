@@ -1,7 +1,8 @@
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
+import { X } from "lucide-react";
 
-export const BucketListItem = ({ item, checked, onToggle, type }) => {
+export const BucketListItem = ({ item, checked, onToggle, onDelete, type }) => {
   return (
     <label
       className={cn("flex", "items-center", "gap-3", "p-3", "rounded-lg", "cursor-pointer", "transition-all", "duration-300")}
@@ -52,9 +53,18 @@ export const BucketListItem = ({ item, checked, onToggle, type }) => {
           borderColor: type === "sweet" ? "#f472b6" : "#525252",
         }}
       />
-      <span className={cn("text-xl")}>{item.emoji}</span>
+      {item.emoji && item.emoji.startsWith("/") ? (
+        <img 
+          src={item.emoji} 
+          alt={item.name}
+          className={cn("w-6", "h-6", "object-contain", "flex-shrink-0")}
+          style={{ maxWidth: "24px", maxHeight: "24px", width: "24px", height: "24px" }}
+        />
+      ) : (
+        <span className={cn("text-xl")}>{item.emoji}</span>
+      )}
       <span
-        className={cn("font-medium", "transition-all", "duration-300")}
+        className={cn("font-medium", "transition-all", "duration-300", "flex-1")}
         style={{
           textDecoration: checked ? "line-through" : "none",
           opacity: checked ? 0.7 : 1,
@@ -63,6 +73,42 @@ export const BucketListItem = ({ item, checked, onToggle, type }) => {
       >
         {item.name}
       </span>
+      {!checked && onDelete && (
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onDelete(item.id);
+          }}
+          className={cn("ml-auto", "rounded-full", "transition-all", "flex-shrink-0", "flex", "items-center", "justify-center")}
+          style={{
+            width: "1.75rem",
+            height: "1.75rem",
+            color: type === "sweet" ? "#ffffff" : "#ffffff",
+            backgroundColor: type === "sweet" ? "#ec4899" : "#fb923c",
+            border: `2px solid ${type === "sweet" ? "#db2777" : "#f97316"}`,
+            boxShadow: type === "sweet" 
+              ? "0 2px 4px rgba(236, 72, 153, 0.3)" 
+              : "0 2px 4px rgba(251, 146, 60, 0.3)"
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = type === "sweet" ? "#db2777" : "#f97316";
+            e.currentTarget.style.transform = "scale(1.15)";
+            e.currentTarget.style.boxShadow = type === "sweet" 
+              ? "0 4px 8px rgba(236, 72, 153, 0.4)" 
+              : "0 4px 8px rgba(251, 146, 60, 0.4)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = type === "sweet" ? "#ec4899" : "#fb923c";
+            e.currentTarget.style.transform = "scale(1)";
+            e.currentTarget.style.boxShadow = type === "sweet" 
+              ? "0 2px 4px rgba(236, 72, 153, 0.3)" 
+              : "0 2px 4px rgba(251, 146, 60, 0.3)";
+          }}
+        >
+          <X style={{ width: "0.875rem", height: "0.875rem", strokeWidth: 3 }} />
+        </button>
+      )}
       {checked && (
         <span className={cn("ml-auto", "text-lg", "animate-bounce-in")}>
           {type === "sweet" ? "✨" : "🔥"}

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Quicksand:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=Roboto+Slab:wght@300;400;500;600;700&display=swap');
 
 :root {
   /* Light theme (Sweet mode) - soft pastels */
@@ -103,7 +103,7 @@ body {
   overflow-x: hidden;
   background-color: var(--background);
   color: var(--foreground);
-  font-family: 'Quicksand', sans-serif;
+  font-family: 'Roboto Slab', serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -116,7 +116,21 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Fredoka', sans-serif;
+  font-family: 'Pixelify Sans', sans-serif;
+}
+
+/* Ensure all content text uses Roboto Slab */
+p, span, div, a, button, input, textarea, select, label, li, td, th {
+  font-family: 'Roboto Slab', serif;
+}
+
+/* Ensure headings always use Pixelify Sans */
+h1, h2, h3, h4, h5, h6,
+[class*="title"],
+[class*="heading"],
+[class*="Title"],
+[class*="Heading"] {
+  font-family: 'Pixelify Sans', sans-serif;
 }
 
 .progress-sweet {
@@ -827,6 +841,17 @@ h1, h2, h3, h4, h5, h6 {
   100% {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes badgeSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
   }
 }
 

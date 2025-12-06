@@ -9,15 +9,16 @@ export const GlobalMoodMeter = ({ sweetCount, spicyCount, isSpicy }) => {
 
   return (
     <div 
-      className={cn("p-4", "rounded-xl", "border", "transition-colors", "duration-500")}
+      className={cn("p-4", "rounded-2xl", "border", "transition-colors", "duration-500", "h-full", "flex", "flex-col")}
       style={{
         width: "100%",
+        minHeight: "100%",
         background: isSpicy
-          ? "rgba(23, 23, 23, 0.9)"
-          : "rgba(253, 242, 248, 0.9)",
+          ? "rgba(23, 23, 23, 0.8)"
+          : "rgba(252, 231, 243, 0.6)",
         borderColor: isSpicy
-          ? "rgba(249, 115, 22, 0.4)"
-          : "rgba(249, 168, 212, 0.6)",
+          ? "rgba(249, 115, 22, 0.3)"
+          : "rgba(249, 168, 212, 0.5)",
         boxShadow: isSpicy
           ? "0 2px 4px -1px rgba(249, 115, 22, 0.2)"
           : "0 2px 4px -1px rgba(249, 168, 212, 0.2)"
