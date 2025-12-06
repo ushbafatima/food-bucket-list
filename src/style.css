@@ -333,19 +333,6 @@ body.spicy .task-item.completed {
     box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
 }
 
-.task-checkbox {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-}
-
-body.spicy .task-checkbox {
-    background-color: var(--spicy-primary);
-}
-body.sweet .task-checkbox {
-    background-color: var(--primary);
-}
-
 .task-text {
     flex: 1;
     transition: all 0.3s;
