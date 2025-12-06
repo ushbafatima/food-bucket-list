@@ -33,16 +33,27 @@ export const GlobalMoodMeter = ({ sweetCount, spicyCount, isSpicy }) => {
         >
           Mood Meter:
         </h3>
-        <span 
-          className={cn("font-bold", "text-lg")}
-          style={{
-            color: isSpicy
-              ? mood.color === "spicy" ? "#fb923c" : mood.color === "sweet" ? "#f472b6" : "#facc15"
-              : mood.color === "sweet" ? "#db2777" : mood.color === "spicy" ? "#fb923c" : "#ec4899"
-          }}
-        >
-          {mood.emoji} {mood.label}
-        </span>
+        {total > 0 ? (
+          <span 
+            className={cn("font-bold", "text-lg")}
+            style={{
+              color: isSpicy
+                ? mood.color === "spicy" ? "#fb923c" : mood.color === "sweet" ? "#f472b6" : "#facc15"
+                : mood.color === "sweet" ? "#db2777" : mood.color === "spicy" ? "#fb923c" : "#ec4899"
+            }}
+          >
+            {mood.emoji} {mood.label}
+          </span>
+        ) : (
+          <span 
+            className={cn("text-sm", "font-medium")}
+            style={{
+              color: isSpicy ? "#737373" : "#9ca3af"
+            }}
+          >
+            Start adding items to see your mood!
+          </span>
+        )}
       </div>
 
       <div 

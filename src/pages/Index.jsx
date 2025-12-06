@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ToggleSwitch } from "@/components/ToggleSwitch.jsx";
 import { BucketSection } from "@/components/BucketSection.jsx";
 import { BadgePopup } from "@/components/BadgePopup.jsx";
@@ -6,6 +6,7 @@ import { BadgeDisplay } from "@/components/BadgeDisplay.jsx";
 import { GlobalMoodMeter } from "@/components/GlobalMoodMeter.jsx";
 import { sweetBadges, spicyBadges } from "@/data/bucketListData.js";
 import { cn } from "@/lib/utils";
+import confetti from "canvas-confetti";
 
 const Index = () => {
   const [isSpicy, setIsSpicy] = useState(false);
@@ -15,6 +16,7 @@ const Index = () => {
   const [checkedSpicy, setCheckedSpicy] = useState(new Set());
   const [collectedBadges, setCollectedBadges] = useState(new Set());
   const [pendingBadge, setPendingBadge] = useState(null);
+  const prevIsSpicyRef = useRef(isSpicy);
 
   const handleSweetToggle = (id) => {
     setCheckedSweet((prev) => {
@@ -75,6 +77,44 @@ const Index = () => {
       return newSet;
     });
   };
+
+  useEffect(() => {
+    // Trigger confetti when switching to sweet mode
+    if (prevIsSpicyRef.current === true && isSpicy === false) {
+      const duration = 3000;
+      const animationEnd = Date.now() + duration;
+      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+      function randomInRange(min, max) {
+        return Math.random() * (max - min) + min;
+      }
+
+      const interval = setInterval(function() {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+          return clearInterval(interval);
+        }
+
+        const particleCount = 50 * (timeLeft / duration);
+        
+        confetti({
+          ...defaults,
+          particleCount,
+          origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+          colors: ['#f472b6', '#ec4899', '#db2777', '#f9a8d4', '#fbcfe8', '#fce7f3']
+        });
+        confetti({
+          ...defaults,
+          particleCount,
+          origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+          colors: ['#f472b6', '#ec4899', '#db2777', '#f9a8d4', '#fbcfe8', '#fce7f3']
+        });
+      }, 250);
+    }
+    
+    prevIsSpicyRef.current = isSpicy;
+  }, [isSpicy]);
 
   useEffect(() => {
     const sweetCount = checkedSweet.size;
