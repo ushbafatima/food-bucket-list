@@ -35,14 +35,21 @@ export const GlobalMoodMeter = ({ sweetCount, spicyCount, isSpicy }) => {
         </h3>
         {total > 0 ? (
           <span 
-            className={cn("font-bold", "text-lg")}
+            className={cn("font-bold", "text-lg", "flex", "items-center", "gap-2")}
             style={{
               color: isSpicy
                 ? mood.color === "spicy" ? "#fb923c" : mood.color === "sweet" ? "#f472b6" : "#facc15"
                 : mood.color === "sweet" ? "#db2777" : mood.color === "spicy" ? "#fb923c" : "#ec4899"
             }}
           >
-            {mood.emoji} {mood.label}
+            {mood.image && (
+              <img 
+                src={mood.image} 
+                alt={mood.label}
+                style={{ width: "20px", height: "20px", objectFit: "contain" }}
+              />
+            )}
+            {mood.label}
           </span>
         ) : (
           <span 
