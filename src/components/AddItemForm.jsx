@@ -54,14 +54,15 @@ export const AddItemForm = ({ onAdd, type }) => {
         className={cn("w-full", "border-dashed", "transition-colors")}
         style={{
           borderColor: type === "sweet" ? "rgba(249, 168, 212, 0.5)" : "rgba(249, 115, 22, 0.5)",
-          color: type === "sweet" ? "#db2777" : "#fb923c"
+          color: type === "sweet" ? "#db2777" : "#fb923c",
+          backgroundColor: type === "sweet" ? "rgba(249, 168, 212)" : "rgba(249, 115, 22, 0.3)"
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.backgroundColor = type === "sweet" ? "#fce7f3" : "rgba(249, 115, 22, 0.2)";
           e.currentTarget.style.borderColor = type === "sweet" ? "#f472b6" : "#f97316";
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = "transparent";
+          e.currentTarget.style.backgroundColor = type === "sweet" ? "rgba(249, 168, 212)" : "rgba(249, 115, 22, 0.3)";
           e.currentTarget.style.borderColor = type === "sweet" ? "rgba(249, 168, 212, 0.5)" : "rgba(249, 115, 22, 0.5)";
         }}
       >
@@ -85,11 +86,20 @@ export const AddItemForm = ({ onAdd, type }) => {
       }}
     >
       <div className={cn("space-y-3")}>
+        <style>{`
+          .input-placeholder-${type}::placeholder {
+            color: ${type === "sweet" ? "rgba(0, 0, 0, 0.5)" : "rgba(255, 255, 255, 0.5)"};
+          }
+          .input-focus-${type}:focus-visible {
+            outline: 2px solid ${type === "sweet" ? "#ec4899" : "#f97316"};
+            outline-offset: 2px;
+          }
+        `}</style>
         <Input
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Enter food name..."
-          className={cn("transition-colors")}
+          className={cn("transition-colors", `input-placeholder-${type}`, `input-focus-${type}`)}
           style={{
             background: type === "sweet" ? "#ffffff" : "#171717",
             borderColor: type === "sweet" ? "#f9a8d4" : "rgba(249, 115, 22, 0.3)",
@@ -146,7 +156,7 @@ export const AddItemForm = ({ onAdd, type }) => {
                   src={label.path} 
                   alt={label.name}
                   className={cn("object-contain")}
-                  style={{ maxWidth: "48px", maxHeight: "48px", width: "48px", height: "48px" }}
+                  style={{ maxWidth: "40px", maxHeight: "40px", width: "40px", height: "40px" }}
                 />
               </button>
             ))}
@@ -160,7 +170,8 @@ export const AddItemForm = ({ onAdd, type }) => {
             className={cn("flex-1", "flex", "items-center", "gap-2")}
             style={{
               background: type === "sweet" ? "#ec4899" : "#f97316",
-              color: "#ffffff"
+              color: "#ffffff",
+              opacity: 1
             }}
             onMouseEnter={(e) => {
               if (name.trim()) {
@@ -177,7 +188,7 @@ export const AddItemForm = ({ onAdd, type }) => {
               src={selectedLabel} 
               alt="selected label"
               className={cn("object-contain")}
-              style={{ maxWidth: "28px", maxHeight: "28px", width: "28px", height: "28px" }}
+              style={{ maxWidth: "24px", maxHeight: "24px", width: "24px", height: "24px" }}
             />
             Add
           </Button>
@@ -186,7 +197,8 @@ export const AddItemForm = ({ onAdd, type }) => {
             variant="ghost"
             onClick={() => setIsExpanded(false)}
             style={{
-              color: type === "sweet" ? "#db2777" : "#fb923c"
+              color: type === "sweet" ? "#db2777" : "#fb923c",
+              backgroundColor: "transparent"
             }}
           >
             Cancel

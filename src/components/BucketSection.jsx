@@ -20,15 +20,15 @@ export const BucketSection = ({
     <div className={cn("space-y-6")} style={{ width: "100%" }}>
       <div className={cn("flex", "items-center", "justify-between")}>
         <div className={cn("flex", "items-center", "gap-2")}>
-          <h2
+        <h2
             className={cn("text-2xl", "font-bold")}
-            style={{
+          style={{
               color: type === "sweet" ? "#db2777" : "#fb923c",
               fontFamily: "'Pixelify Sans', sans-serif"
-            }}
-          >
+          }}
+        >
             {title.replace(/[✨🔥]/g, "").trim()}: {subtitle}
-          </h2>
+        </h2>
         </div>
         <span
           className={cn("text-xl", "font-semibold")}
@@ -44,7 +44,7 @@ export const BucketSection = ({
       <AddItemForm onAdd={onAddItem} type={type} />
 
       {items.length > 0 ? (
-        <div className={cn("grid", "grid-cols-1", "md:grid-cols-2", "gap-2")}>
+        <div className={cn("grid", "grid-cols-1", "gap-2")}>
           {items.map((item) => (
             <BucketListItem
               key={item.id}
@@ -64,9 +64,12 @@ export const BucketSection = ({
             color: type === "sweet" ? "#ec4899" : "#fb923c"
           }}
         >
-          <p className={cn("text-lg", "mb-2")}>
-            {type === "sweet" ? "🍰" : "🔥"}
-          </p>
+          <img
+            src={type === "sweet" ? "/resources/labels/sweet/sparkle.png" : "/resources/labels/spicy/fire.png"}
+            alt={type === "sweet" ? "sparkle" : "fire"}
+            className={cn("mb-2")}
+            style={{ width: "32px", height: "32px", objectFit: "contain", margin: "0 auto", display: "block" }}
+          />
           <p>Your bucket list is empty!</p>
           <p className={cn("text-sm")} style={{ opacity: 0.7 }}>Add your first food item above</p>
         </div>

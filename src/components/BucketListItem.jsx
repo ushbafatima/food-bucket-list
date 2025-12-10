@@ -32,7 +32,7 @@ export const BucketListItem = ({ item, checked, onToggle, onDelete, type }) => {
       onMouseEnter={(e) => {
         if (!checked) {
           e.currentTarget.style.transform = "scale(1.02)";
-          e.currentTarget.style.boxShadow = type==="sweet"? "0 10px 15px -3px rgba(232, 134, 188, 0.39), 0 4px 6px -2px rgba(255, 139, 220, 0.44)": "0 10px 15px -3px rgba(241, 61, 61, 0.58), 0 4px 6px -2px rgba(248, 78, 78, 0.62)";
+          e.currentTarget.style.boxShadow = type==="sweet"? "0 10px 15px -3px rgba(232, 134, 188, 0.39), 0 4px 6px -2px rgba(255, 139, 220, 0.44)": "0 10px 15px -3px rgba(249, 115, 22, 0.5), 0 4px 6px -2px rgba(251, 146, 60, 0.5)";
         }
       }}
       onMouseLeave={(e) => {
@@ -42,17 +42,28 @@ export const BucketListItem = ({ item, checked, onToggle, onDelete, type }) => {
         }
       }}
     >
-      <Checkbox
-        checked={checked}
-        onCheckedChange={() => onToggle(item.id)}
-        className={cn("transition-colors")}
-        style={{
-          height: "1.25rem",
-          width: "1.25rem",
-          borderRadius: "0.375rem",
-          borderColor: type === "sweet" ? "#f472b6" : "#525252",
-        }}
-      />
+      <>
+        <style>{`
+          .checkbox-${type}[data-state="checked"] .checkbox-indicator svg {
+            color: ${type === "sweet" ? "#831843" : "#dc2626"} !important;
+            stroke: ${type === "sweet" ? "#831843" : "#dc2626"} !important;
+          }
+          .checkbox-${type}[data-state="checked"] {
+            background-color: ${type === "sweet" ? "#f472b6" : "#f97316"} !important;
+          }
+        `}</style>
+        <Checkbox
+          checked={checked}
+          onCheckedChange={() => onToggle(item.id)}
+          className={cn("transition-colors", `checkbox-${type}`)}
+          style={{
+            height: "1.25rem",
+            width: "1.25rem",
+            borderRadius: "0.375rem",
+            borderColor: type === "sweet" ? "#f472b6" : "#525252",
+          }}
+        />
+      </>
       {item.emoji && item.emoji.startsWith("/") ? (
         <img 
           src={item.emoji} 
@@ -110,9 +121,12 @@ export const BucketListItem = ({ item, checked, onToggle, onDelete, type }) => {
         </button>
       )}
       {checked && (
-        <span className={cn("ml-auto", "text-lg", "animate-bounce-in")}>
-          {type === "sweet" ? "✨" : "🔥"}
-        </span>
+        <img
+          src={type === "sweet" ? "/resources/labels/sweet/sparkle.png" : "/resources/labels/spicy/fire.png"}
+          alt={type === "sweet" ? "sparkle" : "fire"}
+          className={cn("ml-auto", "animate-bounce-in")}
+          style={{ width: "24px", height: "24px", objectFit: "contain" }}
+        />
       )}
     </label>
   );

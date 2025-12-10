@@ -69,7 +69,7 @@ export const BadgePopup = ({ badge, type, onCollect }) => {
             e.currentTarget.style.background = type === "sweet" ? "#ec4899" : "#f97316";
           }}
         >
-          Collect! ✨
+          Collect! <img src="/resources/labels/sweet/sparkle.png" alt="sparkle" style={{ width: "20px", height: "20px", display: "inline-block", verticalAlign: "middle", marginLeft: "4px" }} />
         </Button>
       </div>
     </div>

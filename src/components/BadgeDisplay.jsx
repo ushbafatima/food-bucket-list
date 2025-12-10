@@ -111,7 +111,8 @@ export const BadgeDisplay = ({ collectedBadges, isSpicy }) => {
                 borderColor: isSpicy 
                   ? "rgba(249, 115, 22, 0.5)"
                   : "rgba(249, 168, 212, 0.5)",
-                color: isSpicy ? "#fb923c" : "#db2777"
+                color: isSpicy ? "#fb923c" : "#db2777",
+                backgroundColor: "transparent"
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = isSpicy 
