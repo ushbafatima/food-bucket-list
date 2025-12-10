@@ -10,6 +10,7 @@ export const BucketSection = ({
   onToggle,
   onAddItem,
   onDeleteItem,
+  onStartGame,
   type,
 }) => {
   const checkedCount = Array.from(checkedItems).filter((id) =>

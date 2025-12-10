@@ -4,6 +4,8 @@ import { BucketSection } from "@/components/BucketSection.jsx";
 import { BadgePopup } from "@/components/BadgePopup.jsx";
 import { BadgeDisplay } from "@/components/BadgeDisplay.jsx";
 import { GlobalMoodMeter } from "@/components/GlobalMoodMeter.jsx";
+import { WhackAChili } from "@/components/WhackAChili.jsx";
+import { Button } from "@/components/ui/button";
 import { sweetBadges, spicyBadges } from "@/data/bucketListData.js";
 import { cn } from "@/lib/utils";
 import confetti from "canvas-confetti";
@@ -18,6 +20,8 @@ const Index = () => {
   const [pendingBadge, setPendingBadge] = useState(null);
   const prevIsSpicyRef = useRef(isSpicy);
   const [showSpicyOverlay, setShowSpicyOverlay] = useState(false);
+  const [showWhackAChili, setShowWhackAChili] = useState(false);
+  const [showGameElmo, setShowGameElmo] = useState(false);
   const fireSound = useRef(null);
   const successSound = useRef(null);
 
@@ -476,6 +480,41 @@ const Index = () => {
               />
             </div>
           </div>
+          
+          {/* Game button - fixed at bottom of page, only visible in spicy mode */}
+          {isSpicy && (
+            <div 
+              className={cn("fixed", "bottom-0", "left-0", "right-0", "flex", "justify-center", "p-4", "z-30")}
+              style={{
+                background: "linear-gradient(to top, rgba(23, 23, 23, 0.95) 0%, rgba(23, 23, 23, 0.8) 50%, transparent 100%)",
+                pointerEvents: "none"
+              }}
+            >
+              <Button
+                onClick={() => setShowWhackAChili(true)}
+                className={cn("px-6", "py-3", "text-lg", "font-semibold", "rounded-full", "transition-all")}
+                style={{
+                  background: "#f97316",
+                  color: "#ffffff",
+                  fontFamily: "'Pixelify Sans', sans-serif",
+                  pointerEvents: "auto",
+                  boxShadow: "0 4px 12px rgba(249, 115, 22, 0.4)"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#ea580c";
+                  e.currentTarget.style.transform = "scale(1.05)";
+                  e.currentTarget.style.boxShadow = "0 6px 16px rgba(249, 115, 22, 0.6)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "#f97316";
+                  e.currentTarget.style.transform = "scale(1)";
+                  e.currentTarget.style.boxShadow = "0 4px 12px rgba(249, 115, 22, 0.4)";
+                }}
+              >
+                WHACK A CHILLI GAME
+              </Button>
+            </div>
+          )}
         </div>
       </main>
 
@@ -485,6 +524,57 @@ const Index = () => {
           type={pendingBadge.type}
           onCollect={handleCollectBadge}
         />
+      )}
+
+      <WhackAChili
+        isOpen={showWhackAChili}
+        onClose={() => setShowWhackAChili(false)}
+        onGameEnd={(score) => {
+          if (score >= 10) {
+            setShowGameElmo(true);
+            setTimeout(() => {
+              setShowGameElmo(false);
+            }, 4500);
+          }
+        }}
+      />
+
+      {/* Elmo overlay for game high score */}
+      {showGameElmo && (
+        <div
+          className={cn("fixed", "bottom-0", "left-0", "right-0", "pointer-events-none")}
+          style={{
+            width: "100%",
+            height: "300px",
+            zIndex: 99998
+          }}
+        >
+          <div
+            style={{
+              position: "relative",
+              width: "100%",
+              height: "100%"
+            }}
+          >
+            <img
+              src="/resources/bg/spicy/elmo.png"
+              alt="Elmo"
+              className="elmo-image"
+              style={{
+                position: "absolute",
+                bottom: "0",
+                left: "50%",
+                transform: "translateX(-50%)",
+                height: "220px",
+                width: "auto",
+                zIndex: 99999,
+                animation: "elmoSlideUpAndDown 4.5s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+                willChange: "bottom, opacity",
+                pointerEvents: "none"
+              }}
+            />
+          </div>
+        </div>
       )}
     </div>
   );
