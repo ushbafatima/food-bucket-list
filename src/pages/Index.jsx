@@ -18,6 +18,7 @@ const Index = () => {
   const [pendingBadge, setPendingBadge] = useState(null);
   const prevIsSpicyRef = useRef(isSpicy);
   const [showSpicyOverlay, setShowSpicyOverlay] = useState(false);
+  const fireSound = useRef(null);
 
   const handleSweetToggle = (id) => {
     setCheckedSweet((prev) => {
@@ -42,6 +43,13 @@ const Index = () => {
       return newSet;
     });
   };
+  const stopfireSound = () => {
+    if (fireSound.current) {
+      fireSound.current.pause();
+      fireSound.current.currentTime = 0;
+    }
+  };
+
 
   const handleAddSweetItem = (name, emoji) => {
     const newItem = {
@@ -117,8 +125,16 @@ const Index = () => {
     // Show spicy overlay (fire + elmo) when switching ON to spicy
     if (prevIsSpicyRef.current === false && isSpicy === true) {
       setShowSpicyOverlay(true);
-      // hide overlay after 5s (matches previous behavior)
-      setTimeout(() => setShowSpicyOverlay(false), 5000);
+       // 🔥 PLAY SOUND
+      if (fireSound.current) {
+        fireSound.current.currentTime = 0;
+        fireSound.current.play();
+      }
+      setTimeout(() => {setShowSpicyOverlay(false); stopfireSound()}, 3000);
+    }
+    if (prevIsSpicyRef.current === true && isSpicy === false) {
+      stopfireSound();
+      setShowSpicyOverlay(false);  // force overlay to hide immediately
     }
 
     prevIsSpicyRef.current = isSpicy;
@@ -164,6 +180,12 @@ const Index = () => {
         position: "relative"
       }}
     >
+    <audio 
+      ref={fireSound} 
+      src="/resources/sounds/spicy.mp3" 
+      preload="auto"
+    />
+
       <header 
         className={cn("fixed", "top-0", "left-0", "right-0", "z-40", "backdrop-blur-md", "border-b", "transition-colors", "duration-500")}
         style={{

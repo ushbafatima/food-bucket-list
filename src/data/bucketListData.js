@@ -1,7 +1,7 @@
 export const sweetBadges = [
   { id: "sb1", name: "Sugar Baby", emoji: "🍬", image: "/resources/badges/sweet/sugar_baby.png", threshold: 5, description: "Just entering your sweet era." },
   { id: "sb2", name: "Cupcake Cutie", emoji: "🧁", image: "/resources/badges/sweet/cupcake_cutie.png", threshold: 10, description: "You're officially a treat enjoyer." },
-  { id: "sb3", name: "Princess Bubblegum", emoji: "👑", image: "/resources/badges/sweet/princess_bubblegum.png", threshold: 50, description: "Final boss of sugary things." },
+  { id: "sb3", name: "Princess Bubblegum", emoji: "👑", image: "/resources/badges/sweet/princess_bubblegum.png", threshold: 20, description: "Final boss of sugary things." },
 ];
 
 export const spicyBadges = [

@@ -11,7 +11,7 @@ export const BucketListItem = ({ item, checked, onToggle, onDelete, type }) => {
         boxShadow: checked 
           ? type === "sweet"
             ? "0 4px 6px -1px rgba(249, 168, 212, 0.3), 0 2px 4px -1px rgba(249, 168, 212, 0.2)"
-            : "0 4px 6px -1px rgba(249, 115, 22, 0.1), 0 2px 4px -1px rgba(249, 115, 22, 0.05)"
+            : "0 3px 3px -1px rgba(249, 115, 22, 0.4), 0 2px 3px -1px rgba(249, 115, 22, 0.4)"
           : "none",
         backgroundColor: checked
           ? type === "sweet"
@@ -32,7 +32,7 @@ export const BucketListItem = ({ item, checked, onToggle, onDelete, type }) => {
       onMouseEnter={(e) => {
         if (!checked) {
           e.currentTarget.style.transform = "scale(1.02)";
-          e.currentTarget.style.boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)";
+          e.currentTarget.style.boxShadow = type==="sweet"? "0 10px 15px -3px rgba(232, 134, 188, 0.39), 0 4px 6px -2px rgba(255, 139, 220, 0.44)": "0 10px 15px -3px rgba(241, 61, 61, 0.58), 0 4px 6px -2px rgba(248, 78, 78, 0.62)";
         }
       }}
       onMouseLeave={(e) => {
