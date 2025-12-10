@@ -19,6 +19,11 @@ export const WhackAChili = ({ isOpen, onClose, onGameEnd }) => {
   const intervalRef = useRef(null);
   const chiliIntervalRef = useRef(null);
   const isPlayingRef = useRef(false);
+  const popSoundRef = useRef(null);
+  const gameStartSoundRef = useRef(null);
+  const gameOverSoundRef = useRef(null);
+  const gameSuccessSoundRef = useRef(null);
+  const gameMusicRef = useRef(null);
   const ELMO_THRESHOLD = 10; // Score threshold for Elmo to appear (10 chilis)
 
   useEffect(() => {
@@ -37,7 +42,102 @@ export const WhackAChili = ({ isOpen, onClose, onGameEnd }) => {
     }
   }, [isOpen, hasStarted]);
 
+  // Ensure audio elements are loaded
+  useEffect(() => {
+    if (popSoundRef.current) {
+      popSoundRef.current.load();
+    }
+    if (gameStartSoundRef.current) {
+      gameStartSoundRef.current.load();
+    }
+    if (gameOverSoundRef.current) {
+      gameOverSoundRef.current.load();
+    }
+    if (gameSuccessSoundRef.current) {
+      gameSuccessSoundRef.current.load();
+    }
+    if (gameMusicRef.current) {
+      gameMusicRef.current.load();
+    }
+  }, []);
+
+  // Play game music in loop when game is playing, stop when game ends
+  useEffect(() => {
+    if (isPlaying && !gameOver && gameMusicRef.current) {
+      // Start playing game music in loop
+      try {
+        gameMusicRef.current.currentTime = 0;
+        gameMusicRef.current.volume = 0.5;
+        gameMusicRef.current.loop = true;
+        const playPromise = gameMusicRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((err) => {
+            console.error("Could not play game music:", err);
+          });
+        }
+      } catch (err) {
+        console.error("Error playing game music:", err);
+      }
+    } else if (gameOver && gameMusicRef.current) {
+      // Stop game music when game ends
+      gameMusicRef.current.pause();
+      gameMusicRef.current.currentTime = 0;
+    }
+  }, [isPlaying, gameOver]);
+
+  // Play game over sound when game ends with score < threshold (Oops message)
+  useEffect(() => {
+    if (gameOver && score < ELMO_THRESHOLD && gameOverSoundRef.current) {
+      try {
+        gameOverSoundRef.current.currentTime = 0;
+        gameOverSoundRef.current.volume = 0.7;
+        const playPromise = gameOverSoundRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((err) => {
+            console.error("Could not play game over sound:", err);
+          });
+        }
+      } catch (err) {
+        console.error("Error playing game over sound:", err);
+      }
+    }
+  }, [gameOver, score]);
+
+  // Play game success sound when game ends with score >= threshold (Congratulations message)
+  useEffect(() => {
+    if (gameOver && score >= ELMO_THRESHOLD && gameSuccessSoundRef.current) {
+      try {
+        gameSuccessSoundRef.current.currentTime = 0;
+        gameSuccessSoundRef.current.volume = 0.7;
+        const playPromise = gameSuccessSoundRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((err) => {
+            console.error("Could not play game success sound:", err);
+          });
+        }
+      } catch (err) {
+        console.error("Error playing game success sound:", err);
+      }
+    }
+  }, [gameOver, score]);
+
   const startGame = () => {
+    // Play game start sound
+    if (gameStartSoundRef.current) {
+      try {
+        gameStartSoundRef.current.currentTime = 0;
+        gameStartSoundRef.current.volume = 0.7;
+        const playPromise = gameStartSoundRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((err) => {
+            console.error("Could not play game start sound:", err);
+          });
+        }
+      } catch (err) {
+        console.error("Error playing game start sound:", err);
+      }
+    }
+    
     setIsPlaying(true);
     isPlayingRef.current = true;
     setHasStarted(true);
@@ -144,6 +244,22 @@ export const WhackAChili = ({ isOpen, onClose, onGameEnd }) => {
   };
 
   const handleChiliClick = (chiliId) => {
+    // Play pop sound
+    if (popSoundRef.current) {
+      try {
+        popSoundRef.current.currentTime = 0;
+        popSoundRef.current.volume = 0.7;
+        const playPromise = popSoundRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((err) => {
+            console.error("Could not play pop sound:", err);
+          });
+        }
+      } catch (err) {
+        console.error("Error playing pop sound:", err);
+      }
+    }
+    
     setChilis((prev) => prev.filter((c) => c.id !== chiliId));
     setScore((prev) => {
       const newScore = prev + 1;
@@ -197,6 +313,11 @@ export const WhackAChili = ({ isOpen, onClose, onGameEnd }) => {
       clearInterval(chiliIntervalRef.current);
       chiliIntervalRef.current = null;
     }
+    // Stop game music
+    if (gameMusicRef.current) {
+      gameMusicRef.current.pause();
+      gameMusicRef.current.currentTime = 0;
+    }
     setIsPlaying(false);
     isPlayingRef.current = false;
     setGameOver(false);
@@ -206,8 +327,14 @@ export const WhackAChili = ({ isOpen, onClose, onGameEnd }) => {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent
+    <>
+      <audio ref={popSoundRef} src="/resources/sounds/pop.mp3" preload="auto" />
+      <audio ref={gameStartSoundRef} src="/resources/sounds/game-start.mp3" preload="auto" />
+      <audio ref={gameOverSoundRef} src="/resources/sounds/game-over.mp3" preload="auto" />
+      <audio ref={gameSuccessSoundRef} src="/resources/sounds/game-success.mp3" preload="auto" />
+      <audio ref={gameMusicRef} src="/resources/sounds/game-music.mp3" preload="auto" loop />
+      <Dialog open={isOpen} onOpenChange={handleClose}>
+        <DialogContent
         className={cn("p-0", "overflow-hidden")}
         style={{
           background: "#171717",
@@ -488,6 +615,7 @@ export const WhackAChili = ({ isOpen, onClose, onGameEnd }) => {
         `}</style>
       </DialogContent>
     </Dialog>
+    </>
   );
 };
 
