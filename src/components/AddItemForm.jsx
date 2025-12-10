@@ -145,8 +145,8 @@ export const AddItemForm = ({ onAdd, type }) => {
                 <img 
                   src={label.path} 
                   alt={label.name}
-                  className={cn("w-8", "h-8", "object-contain")}
-                  style={{ maxWidth: "32px", maxHeight: "32px", width: "32px", height: "32px" }}
+                  className={cn("object-contain")}
+                  style={{ maxWidth: "48px", maxHeight: "48px", width: "48px", height: "48px" }}
                 />
               </button>
             ))}
@@ -176,8 +176,8 @@ export const AddItemForm = ({ onAdd, type }) => {
             <img 
               src={selectedLabel} 
               alt="selected label"
-              className={cn("w-5", "h-5", "object-contain")}
-              style={{ maxWidth: "20px", maxHeight: "20px", width: "20px", height: "20px" }}
+              className={cn("object-contain")}
+              style={{ maxWidth: "28px", maxHeight: "28px", width: "28px", height: "28px" }}
             />
             Add
           </Button>

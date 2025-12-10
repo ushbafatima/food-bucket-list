@@ -50,6 +50,26 @@ const Index = () => {
     }
   };
 
+  const fadeOutAudio = (audioElement, duration = 1000) => {
+    if (!audioElement) return;
+    
+    const startVolume = audioElement.volume;
+    const fadeOutInterval = 50;
+    const steps = duration / fadeOutInterval;
+    const volumeStep = startVolume / steps;
+    
+    const fadeInterval = setInterval(() => {
+      if (audioElement.volume > 0) {
+        audioElement.volume = Math.max(0, audioElement.volume - volumeStep);
+      } else {
+        clearInterval(fadeInterval);
+        audioElement.pause();
+        audioElement.currentTime = 0;
+        audioElement.volume = startVolume; // Reset volume for next play
+      }
+    }, fadeOutInterval);
+  };
+
 
   const handleAddSweetItem = (name, emoji) => {
     const newItem = {
@@ -128,9 +148,19 @@ const Index = () => {
        // 🔥 PLAY SOUND
       if (fireSound.current) {
         fireSound.current.currentTime = 0;
+        fireSound.current.volume = 1;
         fireSound.current.play();
       }
-      setTimeout(() => {setShowSpicyOverlay(false); stopfireSound()}, 3000);
+      // Start fade out after 3 seconds (1 second fade out = 4 seconds total)
+      setTimeout(() => {
+        if (fireSound.current) {
+          fadeOutAudio(fireSound.current, 1000);
+        }
+      }, 3000);
+      setTimeout(() => {
+        setShowSpicyOverlay(false);
+        stopfireSound();
+      }, 4500);
     }
     if (prevIsSpicyRef.current === true && isSpicy === false) {
       stopfireSound();
@@ -216,19 +246,16 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Fire + Elmo overlay when switching to spicy mode */}
-      {showSpicyOverlay && (
+      {/* Fire GIF - always visible when in spicy mode */}
+      {isSpicy && (
         <div
           className={cn("fixed", "bottom-0", "left-0", "right-0", "z-10", "pointer-events-none")}
           style={{
             width: "100%",
             height: "300px",
-            // slide the fire up and then fade the whole overlay out after 5s
-            animation: "fireSlideUp 2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, fireOverlayFadeOut 0.6s ease-in-out 2s forwards",
             willChange: "transform, opacity"
           }}
         >
-          {/* Fire GIF */}
           <div
             style={{
               position: "relative",
@@ -238,6 +265,26 @@ const Index = () => {
               backgroundSize: "cover",
               backgroundPosition: "bottom center",
               animation: "fireFlicker 0.6s ease-in-out infinite"
+            }}
+          />
+        </div>
+      )}
+
+      {/* Elmo overlay when switching to spicy mode */}
+      {showSpicyOverlay && (
+        <div
+          className={cn("fixed", "bottom-0", "left-0", "right-0", "pointer-events-none")}
+          style={{
+            width: "100%",
+            height: "300px",
+            zIndex: 99998
+          }}
+        >
+          <div
+            style={{
+              position: "relative",
+              width: "100%",
+              height: "100%"
             }}
           >
             {/* Elmo inside overlay (align to overlay bottom) */}
@@ -251,9 +298,9 @@ const Index = () => {
                 transform: "translateX(-50%)",
                 height: "220px",
                 width: "auto",
-                zIndex: 9999,
-                animation: "elmoSlideUpBottom 2s cubic-bezier(0.22, 1, 0.36, 1) forwards",
-                willChange: "bottom",
+                zIndex: 99999,
+                animation: "elmoSlideUpAndDown 4.5s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+                willChange: "bottom, opacity",
                 pointerEvents: "none"
               }}
             />
@@ -273,9 +320,9 @@ const Index = () => {
             transform: "translateX(-50%)",
             height: "220px",
             width: "auto",
-            zIndex: 9999,
-            animation: "elmoSlideUpBottom 2s cubic-bezier(0.22, 1, 0.36, 1) forwards",
-            willChange: "bottom",
+            zIndex: 99999,
+            animation: "elmoSlideUpAndDown 4.5s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+            willChange: "bottom, opacity",
             pointerEvents: "none"
           }}
         />

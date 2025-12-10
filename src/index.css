@@ -2468,3 +2468,22 @@ h1, h2, h3, h4, h5, h6,
   }
 }
 
+@keyframes elmoSlideUpAndDown {
+  0% {
+    bottom: -400px;
+    opacity: 0;
+  }
+  22.2% {
+    bottom: 0px;
+    opacity: 1;
+  }
+  77.8% {
+    bottom: 0px;
+    opacity: 1;
+  }
+  100% {
+    bottom: -400px;
+    opacity: 0;
+  }
+}
+

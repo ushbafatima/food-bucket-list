@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import { Check } from "lucide-react";
-
 import { cn } from "@/lib/utils";
+import "./ui.css";
 
 const Checkbox = React.forwardRef(
   ({ className, ...props }, ref) => (
@@ -11,8 +11,8 @@ const Checkbox = React.forwardRef(
       className={cn("checkbox", className)}
       {...props}
     >
-      <CheckboxPrimitive.Indicator className={cn("checkbox-indicator")}>
-        <Check className="h-4 w-4" />
+      <CheckboxPrimitive.Indicator className="checkbox-indicator">
+        <Check style={{ width: "1rem", height: "1rem" }} />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   ),
@@ -20,4 +20,3 @@ const Checkbox = React.forwardRef(
 Checkbox.displayName = CheckboxPrimitive.Root.displayName;
 
 export { Checkbox };
-

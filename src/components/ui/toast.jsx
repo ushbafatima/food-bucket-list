@@ -1,9 +1,8 @@
 import * as React from "react";
 import * as ToastPrimitives from "@radix-ui/react-toast";
-import { cva } from "class-variance-authority";
 import { X } from "lucide-react";
-
 import { cn } from "@/lib/utils";
+import "./ui.css";
 
 const ToastProvider = ToastPrimitives.Provider;
 
@@ -18,24 +17,10 @@ const ToastViewport = React.forwardRef(
 );
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
 
-const toastVariants = cva(
-  "toast-base",
-  {
-    variants: {
-      variant: {
-        default: "toast-default",
-        destructive: "toast-destructive",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-    },
-  },
-);
-
 const Toast = React.forwardRef(
-  ({ className, variant, ...props }, ref) => {
-    return <ToastPrimitives.Root ref={ref} className={cn(toastVariants({ variant }), className)} {...props} />;
+  ({ className, variant = "default", ...props }, ref) => {
+    const variantClass = variant === "default" ? "toast-default" : "toast-destructive";
+    return <ToastPrimitives.Root ref={ref} className={cn("toast", variantClass, className)} {...props} />;
   },
 );
 Toast.displayName = ToastPrimitives.Root.displayName;
@@ -56,10 +41,9 @@ const ToastClose = React.forwardRef(
     <ToastPrimitives.Close
       ref={ref}
       className={cn("toast-close", className)}
-      toast-close=""
       {...props}
     >
-      <X className="h-4 w-4" />
+      <X style={{ width: "1rem", height: "1rem" }} />
     </ToastPrimitives.Close>
   ),
 );
@@ -88,4 +72,3 @@ export {
   ToastClose,
   ToastAction,
 };
-

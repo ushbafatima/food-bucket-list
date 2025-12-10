@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
-
 import { cn } from "@/lib/utils";
+import "./ui.css";
 
 const Dialog = DialogPrimitive.Root;
 
@@ -33,20 +33,8 @@ const DialogContent = React.forwardRef(
         {...props}
       >
         {children}
-        <DialogPrimitive.Close className="dialog-close" style={
-          {
-            display: "flex",
-            backgroundColor: "white",
-            border: "none",
-            borderRadius: "12px",
-            padding:"4px",
-            alignContent:"center",
-            position: "absolute",
-            right: "40spx"
-
-          }
-        }>
-          <X className="h-4 w-4" />
+        <DialogPrimitive.Close className="dialog-close">
+          <X style={{ width: "1rem", height: "1rem" }} />
           <span className="sr-only">Close</span>
         </DialogPrimitive.Close>
       </DialogPrimitive.Content>
@@ -95,4 +83,3 @@ export {
   DialogTitle,
   DialogDescription,
 };
-
