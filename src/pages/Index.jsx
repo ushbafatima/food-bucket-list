@@ -216,6 +216,24 @@ const Index = () => {
       preload="auto"
     />
 
+      <style>{`
+        @media (max-width: 768px) {
+          .header-container {
+            padding-top: 0.75rem !important;
+            padding-bottom: 0.75rem !important;
+          }
+          .header-title {
+            font-size: 1.25rem !important;
+            line-height: 1.2 !important;
+          }
+          .header-wrapper {
+            gap: 0.75rem !important;
+          }
+          .elmo-image {
+            height: 120px !important;
+          }
+        }
+      `}</style>
       <header 
         className={cn("fixed", "top-0", "left-0", "right-0", "z-40", "backdrop-blur-md", "border-b", "transition-colors", "duration-500")}
         style={{
@@ -228,9 +246,9 @@ const Index = () => {
           width: "100%"
         }}
       >
-        <div className={cn("container", "mx-auto", "py-4", "px-4", "flex", "items-center", "justify-between", "gap-4")} style={{ maxWidth: "1300px", flexDirection: "row" }}>
+        <div className={cn("container", "mx-auto", "py-4", "px-4", "flex", "items-center", "justify-between", "gap-4", "header-container", "header-wrapper")} style={{ maxWidth: "1300px", flexDirection: "row" }}>
           <h1 
-            className={cn("font-bold", "transition-all", "duration-500", "text-2xl", "text-3xl")}
+            className={cn("font-bold", "transition-all", "duration-500", "text-2xl", "text-3xl", "header-title")}
             style={{
               color: isSpicy ? "#fb923c" : "#db2777",
               textShadow: isSpicy 
@@ -291,6 +309,7 @@ const Index = () => {
             <img
               src="/resources/bg/spicy/elmo.png"
               alt="Elmo"
+              className="elmo-image"
               style={{
                 position: "absolute",
                 bottom: "0",
@@ -313,6 +332,7 @@ const Index = () => {
         <img
           src="/resources/bg/spicy/elmo.png"
           alt="Elmo"
+          className="elmo-image"
           style={{
             position: "fixed",
             bottom: "0",
@@ -328,8 +348,22 @@ const Index = () => {
         />
       )}
 
-      <main className={cn("container", "mx-auto", "py-8", "px-4")} style={{ maxWidth: "1300px", width: "100%", paddingTop: "100px" }}>
-        <div className={cn("mb-8", "flex", "items-stretch", "gap-4")} style={{ width: "100%" }}>
+      <style>{`
+        @media (max-width: 768px) {
+          .badge-mood-container {
+            flex-direction: column !important;
+          }
+          .badge-mood-container > div {
+            flex: none !important;
+            width: 100% !important;
+          }
+          .main-content {
+            padding-top: 80px !important;
+          }
+        }
+      `}</style>
+      <main className={cn("container", "mx-auto", "py-8", "px-4", "main-content")} style={{ maxWidth: "1300px", width: "100%", paddingTop: "100px" }}>
+        <div className={cn("mb-8", "flex", "items-stretch", "gap-4", "badge-mood-container")} style={{ width: "100%" }}>
           <div className={cn("flex-1", "flex")}>
             <BadgeDisplay collectedBadges={collectedBadges} isSpicy={isSpicy} />
           </div>

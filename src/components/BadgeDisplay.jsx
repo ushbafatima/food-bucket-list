@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { sweetBadges, spicyBadges } from "@/data/bucketListData.js";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -14,9 +14,66 @@ import { Award, ChevronLeft, ChevronRight } from "lucide-react";
 export const BadgeDisplay = ({ collectedBadges, isSpicy }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentBadgeIndex, setCurrentBadgeIndex] = useState(0);
+  const badgeScrollRef = useRef(null);
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(false);
   
   const allBadges = [...sweetBadges, ...spicyBadges];
   const unlockedBadges = allBadges.filter((badge) => collectedBadges.has(badge.id));
+  
+  const checkScrollButtons = () => {
+    if (badgeScrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = badgeScrollRef.current;
+      const hasOverflow = scrollWidth > clientWidth;
+      setShowLeftArrow(hasOverflow && scrollLeft > 5);
+      setShowRightArrow(hasOverflow && scrollLeft < scrollWidth - clientWidth - 5);
+    }
+  };
+  
+  const scrollBadges = (direction) => {
+    const element = badgeScrollRef.current;
+    if (!element) {
+      return;
+    }
+    
+    const scrollAmount = 60; // Scroll by badge width + gap
+    const currentScroll = element.scrollLeft;
+    const maxScroll = element.scrollWidth - element.clientWidth;
+    
+    let newScroll;
+    if (direction === 'left') {
+      newScroll = Math.max(0, currentScroll - scrollAmount);
+    } else {
+      newScroll = Math.min(maxScroll, currentScroll + scrollAmount);
+    }
+    
+    // Use scrollBy for relative scrolling - this is more reliable
+    const scrollDelta = direction === 'left' ? -scrollAmount : scrollAmount;
+    
+    // Try scrollBy first (more reliable for smooth scrolling)
+    if (element.scrollBy) {
+      element.scrollBy({
+        left: scrollDelta,
+        behavior: 'smooth'
+      });
+    } else {
+      // Fallback to direct assignment
+      element.scrollLeft = newScroll;
+    }
+    
+    // Also set it directly as a backup
+    requestAnimationFrame(() => {
+      const targetScroll = direction === 'left' 
+        ? Math.max(0, currentScroll + scrollDelta)
+        : Math.min(maxScroll, currentScroll + scrollDelta);
+      element.scrollLeft = targetScroll;
+      
+      // Verify it worked
+      setTimeout(() => {
+        checkScrollButtons();
+      }, 200);
+    });
+  };
 
   const handlePrevious = () => {
     setCurrentBadgeIndex((prev) => (prev === 0 ? allBadges.length - 1 : prev - 1));
@@ -32,6 +89,41 @@ export const BadgeDisplay = ({ collectedBadges, isSpicy }) => {
       setCurrentBadgeIndex(0);
     }
   };
+  
+  // Check scroll buttons on mount and when badges change
+  useEffect(() => {
+    const checkButtons = () => {
+      if (badgeScrollRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = badgeScrollRef.current;
+        const hasOverflow = scrollWidth > clientWidth;
+        setShowLeftArrow(hasOverflow && scrollLeft > 5);
+        setShowRightArrow(hasOverflow && scrollLeft < scrollWidth - clientWidth - 5);
+      }
+    };
+    
+    // Initial check with multiple delays to ensure DOM is ready
+    const timer1 = setTimeout(checkButtons, 100);
+    const timer2 = setTimeout(checkButtons, 300);
+    const timer3 = setTimeout(checkButtons, 500);
+    
+    // Add scroll event listener
+    const scrollElement = badgeScrollRef.current;
+    if (scrollElement) {
+      scrollElement.addEventListener('scroll', checkButtons);
+      // Also check on resize
+      window.addEventListener('resize', checkButtons);
+    }
+    
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+      if (scrollElement) {
+        scrollElement.removeEventListener('scroll', checkButtons);
+        window.removeEventListener('resize', checkButtons);
+      }
+    };
+  }, [unlockedBadges.length]);
 
   return (
     <div 
@@ -50,8 +142,8 @@ export const BadgeDisplay = ({ collectedBadges, isSpicy }) => {
           : "0 2px 4px -1px rgba(249, 168, 212, 0.2)"
       }}
     >
-      <div className={cn("flex", "items-center", "justify-between", "gap-3", "h-full")}>
-        <div className={cn("flex", "items-center", "gap-3", "flex-1", "min-w-0")}>
+      <div className={cn("flex", "items-center", "justify-between", "gap-3", "h-full")} style={{ width: "100%" }}>
+        <div className={cn("flex", "items-center", "gap-3", "flex-1", "min-w-0")} style={{ minWidth: 0 }}>
           <span 
             className={cn("text-lg", "font-semibold", "whitespace-nowrap", "flex-shrink-0")}
             style={{
@@ -63,31 +155,136 @@ export const BadgeDisplay = ({ collectedBadges, isSpicy }) => {
           </span>
           
           {unlockedBadges.length > 0 ? (
-            <div className={cn("flex", "flex-wrap", "gap-2")}>
-              {unlockedBadges.map((badge) => {
-                return (
-                  <div
-                    key={badge.id}
-                    className={cn("flex", "items-center", "justify-center", "p-2", "rounded-lg", "transition-all", "animate-scale-in", "flex-shrink-0")}
-                    style={{
-                      background: isSpicy
-                        ? "rgba(249, 115, 22, 0.2)"
-                        : "rgba(252, 231, 243, 0.6)",
-                      border: `1px solid ${isSpicy
-                        ? "rgba(249, 115, 22, 0.4)"
-                        : "rgba(249, 168, 212, 0.4)"
-                      }`
-                    }}
-                  >
-                    <img 
-                      src={badge.image} 
-                      alt={badge.name}
-                      className={cn("w-12", "h-12", "max-w-12", "max-h-12", "object-contain", "flex-shrink-0")}
-                      style={{ maxWidth: "48px", maxHeight: "48px", width: "48px", height: "48px" }}
-                    />
-                  </div>
-                );
-              })}
+            <div className={cn("relative", "flex", "items-center", "flex-1", "min-w-0")} style={{ position: "relative", minWidth: 0, maxWidth: "100%" }}>
+              {showLeftArrow && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Left arrow clicked');
+                    scrollBadges('left');
+                  }}
+                  className={cn("absolute", "left-0", "z-10", "rounded-full", "p-1", "transition-all", "flex-shrink-0")}
+                  style={{
+                    backgroundColor: isSpicy ? "rgba(249, 115, 22, 0.8)" : "rgba(249, 168, 212, 0.8)",
+                    border: `1px solid ${isSpicy ? "rgba(249, 115, 22, 1)" : "rgba(249, 168, 212, 1)"}`,
+                    color: "#ffffff",
+                    width: "28px",
+                    height: "28px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    pointerEvents: "auto",
+                    zIndex: 20
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "scale(1.1)";
+                    e.currentTarget.style.backgroundColor = isSpicy ? "rgba(249, 115, 22, 1)" : "rgba(249, 168, 212, 1)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "scale(1)";
+                    e.currentTarget.style.backgroundColor = isSpicy ? "rgba(249, 115, 22, 0.8)" : "rgba(249, 168, 212, 0.8)";
+                  }}
+                >
+                  <ChevronLeft style={{ width: "16px", height: "16px" }} />
+                </button>
+              )}
+              <div 
+                ref={badgeScrollRef}
+                className={cn("flex", "gap-2", "overflow-x-auto", "scrollbar-hide")}
+                style={{
+                  scrollbarWidth: "none",
+                  msOverflowStyle: "none",
+                  WebkitOverflowScrolling: "touch",
+                  flex: 1,
+                  minWidth: 0,
+                  width: "100%",
+                  maxWidth: "100%",
+                  paddingLeft: showLeftArrow ? "32px" : "0",
+                  paddingRight: showRightArrow ? "32px" : "0",
+                  overflowX: "auto",
+                  overflowY: "hidden",
+                  position: "relative"
+                }}
+                onScroll={checkScrollButtons}
+              >
+                <style>{`
+                  .scrollbar-hide::-webkit-scrollbar {
+                    display: none;
+                  }
+                  @media (max-width: 768px) {
+                    .badge-item-mobile img {
+                      max-width: 36px !important;
+                      max-height: 36px !important;
+                      width: 36px !important;
+                      height: 36px !important;
+                    }
+                    .badge-item-mobile {
+                      padding: 0.5rem !important;
+                    }
+                  }
+                `}</style>
+                {unlockedBadges.map((badge) => {
+                  return (
+                    <div
+                      key={badge.id}
+                      className={cn("flex", "items-center", "justify-center", "p-2", "rounded-lg", "transition-all", "animate-scale-in", "flex-shrink-0", "badge-item-mobile")}
+                      style={{
+                        background: isSpicy
+                          ? "rgba(249, 115, 22, 0.2)"
+                          : "rgba(252, 231, 243, 0.6)",
+                        border: `1px solid ${isSpicy
+                          ? "rgba(249, 115, 22, 0.4)"
+                          : "rgba(249, 168, 212, 0.4)"
+                        }`
+                      }}
+                    >
+                      <img 
+                        src={badge.image} 
+                        alt={badge.name}
+                        className={cn("w-12", "h-12", "max-w-12", "max-h-12", "object-contain", "flex-shrink-0")}
+                        style={{ maxWidth: "48px", maxHeight: "48px", width: "48px", height: "48px" }}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+              {showRightArrow && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    scrollBadges('right');
+                  }}
+                  className={cn("absolute", "right-0", "z-10", "rounded-full", "p-1", "transition-all", "flex-shrink-0")}
+                  style={{
+                    backgroundColor: isSpicy ? "rgba(249, 115, 22, 0.8)" : "rgba(249, 168, 212, 0.8)",
+                    border: `1px solid ${isSpicy ? "rgba(249, 115, 22, 1)" : "rgba(249, 168, 212, 1)"}`,
+                    color: "#ffffff",
+                    width: "28px",
+                    height: "28px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    pointerEvents: "auto",
+                    zIndex: 20
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "scale(1.1)";
+                    e.currentTarget.style.backgroundColor = isSpicy ? "rgba(249, 115, 22, 1)" : "rgba(249, 168, 212, 1)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "scale(1)";
+                    e.currentTarget.style.backgroundColor = isSpicy ? "rgba(249, 115, 22, 0.8)" : "rgba(249, 168, 212, 0.8)";
+                  }}
+                >
+                  <ChevronRight style={{ width: "16px", height: "16px" }} />
+                </button>
+              )}
             </div>
           ) : (
             <span 
@@ -101,19 +298,20 @@ export const BadgeDisplay = ({ collectedBadges, isSpicy }) => {
           )}
         </div>
         
-        <Dialog open={isOpen} onOpenChange={handleDialogOpenChange}>
-          <DialogTrigger asChild>
-            <Button 
-              variant="outline" 
-              size="sm"
-              className={cn("transition-colors", "flex-shrink-0")}
-              style={{
-                borderColor: isSpicy 
-                  ? "rgba(249, 115, 22, 0.5)"
-                  : "rgba(249, 168, 212, 0.5)",
-                color: isSpicy ? "#fb923c" : "#db2777",
-                backgroundColor: "transparent"
-              }}
+        <div style={{ flexShrink: 0 }}>
+          <Dialog open={isOpen} onOpenChange={handleDialogOpenChange}>
+            <DialogTrigger asChild>
+              <Button 
+                variant="outline" 
+                size="sm"
+                className={cn("transition-colors", "flex-shrink-0")}
+                style={{
+                  borderColor: isSpicy 
+                    ? "rgba(249, 115, 22, 0.5)"
+                    : "rgba(249, 168, 212, 0.5)",
+                  color: isSpicy ? "#fb923c" : "#db2777",
+                  backgroundColor: "transparent"
+                }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = isSpicy 
                   ? "rgba(249, 115, 22, 0.2)"
@@ -273,6 +471,7 @@ export const BadgeDisplay = ({ collectedBadges, isSpicy }) => {
             </div>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
     </div>
   );

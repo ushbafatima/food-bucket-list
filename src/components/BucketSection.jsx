@@ -20,8 +20,16 @@ export const BucketSection = ({
     <div className={cn("space-y-6")} style={{ width: "100%" }}>
       <div className={cn("flex", "items-center", "justify-between")}>
         <div className={cn("flex", "items-center", "gap-2")}>
+        <style>{`
+          @media (max-width: 768px) {
+            .bucket-section-title {
+              font-size: 1.125rem !important;
+              line-height: 1.4 !important;
+            }
+          }
+        `}</style>
         <h2
-            className={cn("text-2xl", "font-bold")}
+            className={cn("text-2xl", "font-bold", "bucket-section-title")}
           style={{
               color: type === "sweet" ? "#db2777" : "#fb923c",
               fontFamily: "'Pixelify Sans', sans-serif"
