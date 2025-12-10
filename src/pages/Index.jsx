@@ -276,7 +276,7 @@ const Index = () => {
             gap: 0.75rem !important;
           }
           .elmo-image {
-            height: 120px !important;
+            height: 200px !important;
           }
         }
       `}</style>
@@ -361,7 +361,7 @@ const Index = () => {
                 bottom: "0",
                 left: "50%",
                 transform: "translateX(-50%)",
-                height: "220px",
+                height: "350px",
                 width: "auto",
                 zIndex: 99999,
                 animation: "elmoSlideUpAndDown 4.5s cubic-bezier(0.22, 1, 0.36, 1) forwards",
@@ -384,7 +384,7 @@ const Index = () => {
             bottom: "0",
             left: "50%",
             transform: "translateX(-50%)",
-            height: "220px",
+            height: "350px",
             width: "auto",
             zIndex: 99999,
             animation: "elmoSlideUpAndDown 4.5s cubic-bezier(0.22, 1, 0.36, 1) forwards",
@@ -565,7 +565,7 @@ const Index = () => {
                 bottom: "0",
                 left: "50%",
                 transform: "translateX(-50%)",
-                height: "220px",
+                height: "350px",
                 width: "auto",
                 zIndex: 99999,
                 animation: "elmoSlideUpAndDown 4.5s cubic-bezier(0.22, 1, 0.36, 1) forwards",

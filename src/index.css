@@ -2470,7 +2470,7 @@ h1, h2, h3, h4, h5, h6,
 
 @keyframes elmoSlideUpAndDown {
   0% {
-    bottom: -400px;
+    bottom: -500px;
     opacity: 0;
   }
   22.2% {
@@ -2482,7 +2482,7 @@ h1, h2, h3, h4, h5, h6,
     opacity: 1;
   }
   100% {
-    bottom: -400px;
+    bottom: -500px;
     opacity: 0;
   }
 }
