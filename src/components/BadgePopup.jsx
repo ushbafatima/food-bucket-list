@@ -6,7 +6,9 @@ export const BadgePopup = ({ badge, type, onCollect }) => {
     <div 
       className={cn("fixed", "inset-0", "z-50", "flex", "items-center", "justify-center", "animate-fade-in")}
       style={{
-        background: "rgba(255, 0, 153, 0.6)",
+        background: type === "sweet" 
+          ? "rgba(255, 0, 153, 0.6)" 
+          : "rgba(249, 115, 22, 0.6)",
         backdropFilter: "blur(4px)"
       }}
     >

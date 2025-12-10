@@ -19,6 +19,7 @@ const Index = () => {
   const prevIsSpicyRef = useRef(isSpicy);
   const [showSpicyOverlay, setShowSpicyOverlay] = useState(false);
   const fireSound = useRef(null);
+  const successSound = useRef(null);
 
   const handleSweetToggle = (id) => {
     setCheckedSweet((prev) => {
@@ -221,6 +222,17 @@ const Index = () => {
     }
   };
 
+  // Play success sound when badge popup appears
+  useEffect(() => {
+    if (pendingBadge && successSound.current) {
+      successSound.current.volume = 0.5; // Lower volume
+      successSound.current.currentTime = 0;
+      successSound.current.play().catch((err) => {
+        console.log("Could not play success sound:", err);
+      });
+    }
+  }, [pendingBadge]);
+
   return (
     <div 
       className={cn("min-h-screen", "transition-all", "duration-500")}
@@ -238,6 +250,11 @@ const Index = () => {
     <audio 
       ref={fireSound} 
       src="/resources/sounds/spicy.mp3" 
+      preload="auto"
+    />
+    <audio 
+      ref={successSound} 
+      src="/resources/sounds/success.mp3" 
       preload="auto"
     />
 
