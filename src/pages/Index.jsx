@@ -174,20 +174,45 @@ const Index = () => {
     const sweetCount = checkedSweet.size;
     const spicyCount = checkedSpicy.size;
 
-    for (const badge of sweetBadges) {
-      if (sweetCount >= badge.threshold && !collectedBadges.has(badge.id)) {
-        setPendingBadge({ badge, type: "sweet" });
-        return;
-      }
-    }
+    // Compute updated badge set (remove badges that no longer meet threshold)
+    setCollectedBadges((prev) => {
+      const newSet = new Set(prev);
+      let changed = false;
 
-    for (const badge of spicyBadges) {
-      if (spicyCount >= badge.threshold && !collectedBadges.has(badge.id)) {
-        setPendingBadge({ badge, type: "spicy" });
-        return;
+      // Remove sweet badges if count is below threshold
+      for (const badge of sweetBadges) {
+        if (newSet.has(badge.id) && sweetCount < badge.threshold) {
+          newSet.delete(badge.id);
+          changed = true;
+        }
       }
-    }
-  }, [checkedSweet, checkedSpicy, collectedBadges]);
+
+      // Remove spicy badges if count is below threshold
+      for (const badge of spicyBadges) {
+        if (newSet.has(badge.id) && spicyCount < badge.threshold) {
+          newSet.delete(badge.id);
+          changed = true;
+        }
+      }
+
+      // Check if new badges should be awarded (using the updated set)
+      for (const badge of sweetBadges) {
+        if (sweetCount >= badge.threshold && !newSet.has(badge.id)) {
+          setPendingBadge({ badge, type: "sweet" });
+          return newSet; // Return updated set, badge will be added when collected
+        }
+      }
+
+      for (const badge of spicyBadges) {
+        if (spicyCount >= badge.threshold && !newSet.has(badge.id)) {
+          setPendingBadge({ badge, type: "spicy" });
+          return newSet; // Return updated set, badge will be added when collected
+        }
+      }
+
+      return changed ? newSet : prev;
+    });
+  }, [checkedSweet, checkedSpicy]);
 
   const handleCollectBadge = () => {
     if (pendingBadge) {
